@@ -27,8 +27,13 @@ if __name__ == "__main__":
     best_pos = hmin
 
     for target in range(hmin, hmax):
-        cost = sum(sum(range(1, abs(pos - target) + 1)) for pos in hpos)
-        if cost < best:
+        cost = 0
+        for pos in hpos:
+            cost += (abs(pos - target) + 1) * abs(pos - target) // 2
+            if cost > best:
+                break
+        else:
+        # if cost < best:
             best_pos = target
             best = cost
 
