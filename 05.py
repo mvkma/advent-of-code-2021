@@ -73,6 +73,5 @@ if __name__ == "__main__":
             xx, yy = xx + dx, yy + dy
             covered[(xx, yy)] += 1
 
-
     print(sum(int(v > 1) for v in covered.values()))
 

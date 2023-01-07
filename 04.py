@@ -54,16 +54,13 @@ class Bingo:
         if val in self.values:
             self.marked.add(self.values[val])
 
-        # full = False
         for j in range(self.nrows):
             if all((i, j) in self.marked for i in range(self.ncols)):
-                # full = True
                 self.has_won = True
                 break
 
         for i in range(self.ncols):
             if all((i, j) in self.marked for j in range(self.nrows)):
-                # full = True
                 self.has_won = True
                 break
 
@@ -89,11 +86,13 @@ if __name__ == "__main__":
 
         boards.append(Bingo(rows))
 
-    done = False
+    scores = []
     for num in random_nums:
         for b in boards:
             if (not b.has_won) and b.mark(num):
-                done = True
                 score = sum(val for pos, val in b.positions.items() if not pos in b.marked)
-                print(score * num)
+                scores.append(score * num)
+
+    print(scores[0])
+    print(scores[-1])
 

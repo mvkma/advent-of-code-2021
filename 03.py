@@ -40,11 +40,13 @@ if __name__ == "__main__":
             nbits = max(nbits, len(line))
             nums.append(int(line, 2))
 
+    # Part 1
     gamma = sum(b * 2**i for i, b in enumerate(reversed(most_common_bits(nums, nbits))))
     epsilon = (2**nbits - 1) ^ gamma
 
     print(gamma * epsilon)
 
+    # Part 2
     oxygen_nums = nums.copy()
     n = nbits
 
