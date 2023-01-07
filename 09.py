@@ -66,10 +66,12 @@ if __name__ == "__main__":
             line = line.strip()
             grid.append([int(c) for c in line])
 
+    # Part 1
     low_points = find_low_points(grid)
     risk = sum(grid[yy][xx] + 1 for xx, yy in low_points)
     print(risk)
 
+    # Part 2
     basin_sizes = []
     for p in low_points:
         basin_sizes.append(basin_size(grid, p))

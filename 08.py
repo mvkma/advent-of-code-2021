@@ -74,9 +74,11 @@ if __name__ == "__main__":
             signal_patterns.append(signal_part.strip().split())
             output_values.append(output_part.strip().split())
 
+    # Part 1
     res = sum(sum(len(v) in (2, 3, 4, 7) for v in output) for output in output_values)
     print(res)
 
+    # Part 2
     res = 0
     for signal, output in zip(signal_patterns, output_values):
         mapping = decode(signal)

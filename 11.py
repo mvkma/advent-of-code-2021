@@ -79,9 +79,11 @@ if __name__ == "__main__":
         n = step(grid)
         nflashes += n
 
+        # Part 1
         if k == 99:
             print(nflashes)
 
+        # Part 2
         if n == 100:
             print(k + 1)
             break
