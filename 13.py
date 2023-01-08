@@ -76,8 +76,10 @@ if __name__ == "__main__":
             else:
                 dots.add(tuple(map(int, line.split(","))))
 
+    # Part 1
     print(len(fold(dots, folds[0])))
 
+    # Part 2
     out = dots.copy()
     for f in folds:
         out = fold(out, f)

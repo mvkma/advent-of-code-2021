@@ -85,11 +85,9 @@ if __name__ == "__main__":
         for k, v in state.items():
             counts[c] += k.count(c) * v
 
-    for k, v in counts.items():
-        if v % 2 == 0:
-            counts[k] = v // 2
-        else:
-            counts[k] = (v + 1) // 2
+    counts[initial_state[0]] += 1
+    counts[initial_state[-1]] += 1
 
-    # TODO: off by one
+    counts = {k: v // 2 for k, v in counts.items()}
+
     print(max(counts.values()) - min(counts.values()))
