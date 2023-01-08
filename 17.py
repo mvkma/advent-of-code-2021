@@ -58,6 +58,7 @@ if __name__ == "__main__":
     best = None
     possible_velocities = []
 
+    # Questionable heuristics...
     for vx in range(400):
         for vy in range(-400, 400):
             hit, t, max_height = hits_target((0, 0), (vx, vy), target)
@@ -67,5 +68,8 @@ if __name__ == "__main__":
                     best = (vx, vy)
                     highest = max_height
 
-    print(highest, best)
+    # Part 1
+    print(highest)
+
+    # Part 2
     print(len(possible_velocities))

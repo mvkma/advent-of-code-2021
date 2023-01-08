@@ -151,6 +151,8 @@ if __name__ == "__main__":
 
     parsed_msg, length = parse(hex_to_bin(msg))
 
+    # Part 1
     print(version_sum(parsed_msg))
 
+    # Part 2
     print(evaluate(parsed_msg[0]))

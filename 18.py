@@ -3,24 +3,58 @@ from operator import add
 
 INPUT_FILE = "input_18"
 
+L1 = """[1,1]
+[2,2]
+[3,3]
+[4,4]"""
+
+L2 = """[1,1]
+[2,2]
+[3,3]
+[4,4]
+[5,5]"""
+
+L3 = """[1,1]
+[2,2]
+[3,3]
+[4,4]
+[5,5]
+[6,6]"""
+
+L4 = """[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]
+[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]
+[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]
+[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]
+[7,[5,[[3,8],[1,4]]]]
+[[2,[2,2]],[8,[8,1]]]
+[2,9]
+[1,[[[9,3],9],[[9,0],[0,7]]]]
+[[[5,[7,4]],7],1]
+[[[[4,2],2],6],[8,7]]"""
+
+L5 = """[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
+[[[5,[2,8]],4],[5,[[9,9],0]]]
+[6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
+[[[6,[0,7]],[0,9]],[4,[9,[9,0]]]]
+[[[7,[6,4]],[3,[1,3]]],[[[5,5],1],9]]
+[[6,[[7,3],[3,2]]],[[[3,8],[5,7]],4]]
+[[[[5,4],[7,7]],8],[[8,3],8]]
+[[9,3],[[9,9],[6,[4,9]]]]
+[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
+[[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]"""
+
 class SnailfishNumber:
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
         if isinstance(left, SnailfishNumber) and isinstance(right, SnailfishNumber):
-            # self.depth = max(left.depth, right.depth) + 1
             self.left.parent = self
             self.right.parent = self
         elif isinstance(left, SnailfishNumber) and isinstance(right, int):
-            # self.depth = left.depth + 1
             self.left.parent = self
         elif isinstance(right, SnailfishNumber) and isinstance(left, int):
-            # self.depth = right.depth + 1
             self.right.parent = self
-        # else:
-        #     pass
-            # self.depth = 1
 
         self.parent = None
 
@@ -80,6 +114,17 @@ class SnailfishNumber:
 
         return left or right
 
+    def as_list(self):
+        left = self.left
+        if isinstance(self.left, SnailfishNumber):
+            left = left.as_list()
+
+        right = self.right
+        if isinstance(self.right, SnailfishNumber):
+            right = right.as_list()
+
+        return [left, right]            
+
     def magnitude(self):
         left = self.left
         right = self.right
@@ -97,8 +142,7 @@ class SnailfishNumber:
         if not self.is_splittable:
             return self
 
-        # TODO: boom
-        new = SnailfishNumber.from_list(eval(str(self)))
+        new = SnailfishNumber.from_list(self.as_list())
 
         cur = new
         while isinstance(cur, SnailfishNumber):
@@ -129,8 +173,7 @@ class SnailfishNumber:
         if not self.is_explodable:
             return self
 
-        # TODO: boom
-        new = SnailfishNumber.from_list(eval(str(self)))
+        new = SnailfishNumber.from_list(self.as_list())
 
         d = new.depth
         s = new
@@ -232,46 +275,6 @@ def snailfish_sum(numlist):
 
     return num
 
-L1 = """[1,1]
-[2,2]
-[3,3]
-[4,4]"""
-
-L2 = """[1,1]
-[2,2]
-[3,3]
-[4,4]
-[5,5]"""
-
-L3 = """[1,1]
-[2,2]
-[3,3]
-[4,4]
-[5,5]
-[6,6]"""
-
-L4 = """[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]
-[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]
-[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]
-[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]
-[7,[5,[[3,8],[1,4]]]]
-[[2,[2,2]],[8,[8,1]]]
-[2,9]
-[1,[[[9,3],9],[[9,0],[0,7]]]]
-[[[5,[7,4]],7],1]
-[[[[4,2],2],6],[8,7]]"""
-
-L5 = """[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
-[[[5,[2,8]],4],[5,[[9,9],0]]]
-[6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
-[[[6,[0,7]],[0,9]],[4,[9,[9,0]]]]
-[[[7,[6,4]],[3,[1,3]]],[[[5,5],1],9]]
-[[6,[[7,3],[3,2]]],[[[3,8],[5,7]],4]]
-[[[[5,4],[7,7]],8],[[8,3],8]]
-[[9,3],[[9,9],[6,[4,9]]]]
-[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
-[[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]"""
-
 if __name__ == "__main__":
     S1 = SnailfishNumber.from_list([[[[[9,8],1],2],3],4])
     S2 = SnailfishNumber.from_list([7,[6,[5,[4,[3,2]]]]])
@@ -295,9 +298,11 @@ if __name__ == "__main__":
             line = line.strip()
             nums.append(SnailfishNumber.from_list(eval(line)))
 
+    # Part 1
     res = snailfish_sum(nums).magnitude()
     print(res)
 
+    # Part 2
     best = 0
     for i in range(len(nums)):
         for j in range(len(nums)):
