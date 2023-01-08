@@ -3,6 +3,16 @@ from functools import cache
 
 INPUT_FILE = "input_21"
 
+DICE_OUTCOMES = (
+    (3, 1),
+    (4, 3),
+    (5, 6),
+    (6, 7),
+    (7, 6),
+    (8, 3),
+    (9, 1),
+)
+
 def mmod(m, n):
     if m % n == 0:
         return n
@@ -23,16 +33,16 @@ def num_wins(pos_a, score_a, pos_b, score_b):
     wins_a = 0
     wins_b = 0
 
-    for n1, n2, n3 in product(range(1, 4), repeat=3):
-        pos_a_new = mmod(pos_a + n1 + n2 + n3, 10)
+    for n, mul in DICE_OUTCOMES:
+        pos_a_new = mmod(pos_a + n, 10)
         score_a_new = score_a + pos_a_new
 
         if score_a_new >= 21:
-            wins_a += 1
+            wins_a += mul
         else:
             wb, wa = num_wins(pos_b, score_b, pos_a_new, score_a_new)
-            wins_a += wa
-            wins_b += wb
+            wins_a += wa * mul
+            wins_b += wb * mul
 
     return wins_a, wins_b
 
@@ -43,6 +53,7 @@ if __name__ == "__main__":
         initial_pos_b = int(next(f).strip()[-1])
         score_b = 0
 
+    # Part 1
     pos_a = initial_pos_a
     pos_b = initial_pos_b
 
@@ -62,4 +73,4 @@ if __name__ == "__main__":
             break
 
     # Part 2
-    print(num_wins(initial_pos_a, 0, initial_pos_b, 0))
+    print(max(num_wins(initial_pos_a, 0, initial_pos_b, 0)))

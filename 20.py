@@ -11,6 +11,7 @@ SAMPLE = """..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..
 def decode(algorithm, seed, i, j, fill):
     n = 0
     b = 8
+
     for l in range(j - 1, j + 2):
         for k in range(i - 1, i + 2):
             if 0 <= k < len(seed[0]) and 0 <= l < len(seed):
@@ -56,9 +57,6 @@ if __name__ == "__main__":
         for line in f:
             input_image.append(list(line.strip()))
 
-    print(len(algorithm))
-    print(len(input_image), len(input_image[0]))
-
     image = input_image
     for i in range(50):
         if algorithm[0] == "#" and i % 2 == 1:
@@ -68,7 +66,9 @@ if __name__ == "__main__":
 
         image = decode_image(algorithm, image, fill)
 
+        # Part 1
         if i == 1:
             print(count_pixels(image))
 
+    # Part 2
     print(count_pixels(image))
