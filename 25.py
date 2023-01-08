@@ -82,8 +82,7 @@ if __name__ == "__main__":
         nrows = yy + 1
         size = (ncols, nrows)
 
-    print_map(east, south, size)
-    print()
+    # Part 1
     k = 0
     while True:
         east, south, moved1 = move(east, south, (+1, 0), size)
@@ -94,4 +93,3 @@ if __name__ == "__main__":
             break
 
         k += 1
-

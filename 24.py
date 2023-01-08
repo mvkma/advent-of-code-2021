@@ -101,19 +101,20 @@ def parse_line(line):
     return (cmd, tuple(args))
 
 if __name__ == "__main__":
-    program = [parse_line(line) for line in SAMPLE1.splitlines()]
-    program = [parse_line(line) for line in SAMPLE2.splitlines()]
-    program = [parse_line(line) for line in SAMPLE3.splitlines()]
+    # program = [parse_line(line) for line in SAMPLE1.splitlines()]
+    # program = [parse_line(line) for line in SAMPLE2.splitlines()]
+    # program = [parse_line(line) for line in SAMPLE3.splitlines()]
 
     with open(INPUT_FILE) as f:
         program = [parse_line(line) for line in f.readlines()]
 
-    prog1 = [parse_line(line) for line in SAMPLE4.splitlines()]
-    prog26 = [parse_line(line) for line in SAMPLE5.splitlines()]
+    # prog1 = [parse_line(line) for line in SAMPLE4.splitlines()]
+    # prog26 = [parse_line(line) for line in SAMPLE5.splitlines()]
 
     digits_largest = [0] * 14
     digits_smallest = [0] * 14
     q = []
+
     for i in range(0, len(program), 18):
         if program[i + 4][1][1] == 1:
             add_y = program[i + 15][1][1]
@@ -136,7 +137,10 @@ if __name__ == "__main__":
     assert run_alu(program, digits_largest)["z"] == 0
     assert run_alu(program, digits_smallest)["z"] == 0
 
+    # Part 1
     print("".join(str(d) for d in digits_largest))
+
+    # Part 2
     print("".join(str(d) for d in digits_smallest))
 
 # inp w
