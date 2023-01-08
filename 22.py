@@ -166,6 +166,7 @@ if __name__ == "__main__":
 
     print(len(on))
 
+    # Part 2
     cuboids = []
 
     for action, xmin, xmax, ymin, ymax, zmin, zmax in actions:

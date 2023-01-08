@@ -1,7 +1,5 @@
 from collections import deque
-from functools import reduce, cache
 from heapq import heappop, heappush
-import math
 
 INPUT_FILE = "input_23"
 
@@ -20,13 +18,6 @@ ROOMS = {
     "D": 8,
 }
 
-TARGETS = {
-    "A": (11, 15, 19, 23),
-    "B": (12, 16, 20, 24),
-    "C": (13, 17, 21, 25),
-    "D": (14, 18, 22, 26),
-}
-
 HALLWAY = (0, 1, 3, 5, 7, 9, 10)
 
 def print_map(state):
@@ -41,7 +32,6 @@ def print_map(state):
         p += 4
     print("  " + "#" * 9 + "  ")
 
-@cache
 def can_move(start, end, state):
     if start < end:
         s = 1
@@ -54,12 +44,11 @@ def can_move(start, end, state):
 
     return True
 
-@cache
-def can_move_into_target(item, state):
+def can_move_into_target(item, state, targets):
     steps = 0
     dest = None
 
-    for target in TARGETS[item]:
+    for target in targets[item]:
         if state[target - 11] == ".":
             dest = target
             steps += 1
@@ -71,22 +60,21 @@ def can_move_into_target(item, state):
 
     return dest, steps
 
-@cache
-def can_move_out_of_room(room, state):
+def can_move_out_of_room(room, state, targets):
     steps = 0
 
-    for pos in TARGETS[room]:
+    for pos in targets[room]:
         item = state[pos - 11]
         steps += 1
 
         if item == ".":
             continue
 
-        targets = TARGETS[item]
-        if pos in targets:
+        item_targets = targets[item]
+        if pos in item_targets:
             correct = True
-            ix = targets.index(pos)
-            for other in targets[ix + 1:]:
+            ix = item_targets.index(pos)
+            for other in item_targets[ix + 1:]:
                 if other != item:
                     correct = False
                     break
@@ -98,7 +86,7 @@ def can_move_out_of_room(room, state):
 
     return None, steps
 
-def get_moves(state):
+def get_moves(state, targets):
     moves = list()
 
     # First try to move from the hallway into the rooms
@@ -109,18 +97,16 @@ def get_moves(state):
         item = state[pos]
         energy = ENERGIES[item]
 
-        target, steps = can_move_into_target(item, state[11:])
+        target, steps = can_move_into_target(item, state[11:], targets)
 
         if target is not None and can_move(pos, ROOMS[item], state):
             cost = (steps + abs(ROOMS[item] - pos)) * energy
-            # print(f"{item} at {pos} can move into target at {target} cost {cost}")
-            # moves.append((pos, target, cost))
             yield pos, target, cost
 
     # Can we move out?
     for room in ROOMS.keys():
 
-        source, steps = can_move_out_of_room(room, state[11:])
+        source, steps = can_move_out_of_room(room, state[11:], targets)
 
         if source is None:
             continue
@@ -133,37 +119,31 @@ def get_moves(state):
         for pos in HALLWAY:
             if can_move(ROOMS[room], pos, state):
                 cost = (abs(ROOMS[room] - pos) + steps) * energy
-                # print(f"{item} at {source} can move out to {pos} cost {cost}")
-                # moves.append((source, pos, cost))
                 yield source, pos, cost
 
-        target, nsteps = can_move_into_target(item, state[11:])
+        target, nsteps = can_move_into_target(item, state[11:], targets)
 
         if target is not None and can_move(ROOMS[room], ROOMS[item], state):
             cost = (abs(ROOMS[room] - ROOMS[item]) + steps + nsteps) * energy
-            # print(f"{item} at {source} can move into target at {target} cost {cost}")
-            # moves.append((source, target, cost))
             yield source, target, cost
 
 def find_solution(initial_state, final_state):
+    targets = {item: tuple(pos for pos, c in enumerate(final_state) if c == item) for item in "ABCD"}
+
     q = []
     heappush(q, (0, initial_state))
 
     hist = {initial_state: 0}
     best = 100_000_000
 
-    k = 0
     while len(q) > 0:
-        if k % 100_000 == 0:
-            print(k, len(q), len(hist), best)
-        k += 1
 
         energy, state = heappop(q)
 
         if state == final_state:
             best = min(best, energy)
 
-        for s, e, cost in get_moves(state):
+        for s, e, cost in get_moves(state, targets):
             if s < e:
                 nstate = state[:s] + state[e] + state[s + 1 : e] + state[s] + state[e + 1:]
             else:
@@ -179,22 +159,20 @@ def find_solution(initial_state, final_state):
 
     return best
 
-tmp = """#############
-#.B.........#
-###A#.#C#D###
-  #A#B#C#D#  
-  #########"""
-
 if __name__ == "__main__":
     with open(INPUT_FILE) as f:
         initial_state = "".join([c for c in f.read() if c in "ABCD."])
 
     # initial_state = "".join([c for c in SAMPLE if c in "ABCD."])
-    print_map(initial_state)
+    # print_map(initial_state)
 
+    # Part 1
     final_state = "." * 11 + "ABCDABCD"
+    print(find_solution(initial_state, final_state))
 
+    # Part 2
     bigger_initial_state = initial_state[:15] + "DCBADBAC" + initial_state[15:]
-    print_map(bigger_initial_state)
+    # print_map(bigger_initial_state)
 
     bigger_final_state = "." * 11 + "ABCDABCDABCDABCD"
+    print(find_solution(bigger_initial_state, bigger_final_state))
