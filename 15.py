@@ -1,7 +1,5 @@
 from collections import deque, defaultdict
 from heapq import heappop, heappush
-from functools import cache
-import math
 
 INPUT_FILE = "input_15"
 
@@ -16,7 +14,6 @@ SAMPLE = """1163751742
 1293138521
 2311944581"""
 
-@cache
 def get_neighbors(xx, yy, ncols, nrows):
     ns = []
 
@@ -44,10 +41,10 @@ def min_risk_path(start, end, grid):
         risk, cur = heappop(q)
 
         for ncur in get_neighbors(*cur, ncols, nrows):
-            if ncur in seen.keys():
-                continue
+            nrisk = risk + grid[ncur[1]][ncur[0]]
 
-            nrisk = min(risk + grid[ncur[1]][ncur[0]], seen.get(ncur, math.inf))
+            if ncur in seen.keys() and seen[ncur] <= nrisk:
+                continue
 
             seen[ncur] = nrisk
             heappush(q, (nrisk, ncur))
@@ -70,9 +67,11 @@ if __name__ == "__main__":
             line = line.strip()
             grid.append([int(c) for c in line])
 
+    # Part 1
     best = min_risk_path((0, 0), (len(grid[0]) - 1, len(grid) - 1), grid)
     print(best)
 
+    # Part 2
     large_grid = []
     for j in range(5):
         for row in grid:
